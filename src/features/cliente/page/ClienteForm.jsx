@@ -61,6 +61,7 @@ export default function ClienteForm() {
                   <fieldset className="fieldset w-full">
                     <label className="fieldset-legend" htmlFor="nome">Nome</label>
                     <input
+                      placeholder="Nome"
                       type="text"
                       id="nome"
                       className="input input-bordered w-full"
@@ -78,6 +79,7 @@ export default function ClienteForm() {
                     <label className="fieldset-legend" htmlFor="cpf">CPF</label>
                     <IMaskInput
                       mask="000.000.000-00"
+                      placeholder="000.000.000-00"
                       value={cliente.cpf}
                       onAccept={(value) =>
                         setCliente({ ...cliente, cpf: value })
@@ -97,6 +99,7 @@ export default function ClienteForm() {
                     <label className="fieldset-legend" htmlFor="foneCelular">Fone Celular</label>
                     <IMaskInput
                       mask="(00) 0 0000.0000"
+                      placeholder="(00) 0 0000.0000"
                       value={cliente.foneCelular}
                       onAccept={(value) =>
                         setCliente({ ...cliente, foneCelular: value })
@@ -113,6 +116,7 @@ export default function ClienteForm() {
                     <label className="fieldset-legend" htmlFor="foneFixo">Fone Fixo</label>
                     <IMaskInput
                       mask="(00) 0 0000.0000"
+                      placeholder="(00) 0 0000.0000"
                       value={cliente.foneFixo}
                       onAccept={(value) =>
                         setCliente({ ...cliente, foneFixo: value })
