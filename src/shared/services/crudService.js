@@ -8,7 +8,7 @@ export async function listar(mappingController) {
 
 export async function buscarPorId(mappingController, id) {
 
-    const response = await api.get(mappingController+'/'+id);
+    const response = await api.get(mappingController + '/' + id);
     return response.data;
 }
 
@@ -26,5 +26,5 @@ export async function atualizar(mappingController, obj) {
 
 export async function remover(mappingController, id) {
 
-    await api.delete(mappingController+'/'+id);
+    await api.delete(mappingController + '/' + id);
 }

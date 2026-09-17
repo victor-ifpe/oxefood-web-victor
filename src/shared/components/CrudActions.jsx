@@ -2,7 +2,7 @@ export default function CrudActions({ onDetail, onEdit, onDelete }) {
 
     return (
 
-        <div className="flex items-center gap-2" style={{justifyContent: 'center'}}>
+        <div className="flex items-center gap-2" style={{ justifyContent: 'center' }}>
 
             <button className="btn btn-accent" onClick={onDetail}>
 

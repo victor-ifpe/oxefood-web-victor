@@ -12,7 +12,7 @@ export default function Menu() {
 
                 <button className="btn btn-ghost">
                     <a href="/home">
-                        Home
+                        <strong>Home</strong>
                     </a>
                 </button>
 
@@ -24,11 +24,19 @@ export default function Menu() {
                     </ul>
                 </div>
 
+                <button popoverTarget="menu-empresas"> <strong> Empresas </strong> </button>
+                <div id="menu-empresas" popover="auto">
+                    <ul className="menu">
+                        <li><a href="/empresa">Listar</a></li>
+                        <li><a href="/empresa-form">Cadastrar</a></li>
+                    </ul>
+                </div>
+
                 <button popoverTarget="menu-produtos"> <strong> Produto </strong> </button>
                 <div id="menu-produtos" popover="auto">
                     <ul className="menu">
-                        <li><a href="#">Listar</a></li>
-                        <li><a href="#">Cadastrar</a></li>
+                        <li><a href="/produto">Listar</a></li>
+                        <li><a href="/produto-form">Cadastrar</a></li>
                     </ul>
                 </div>
 
