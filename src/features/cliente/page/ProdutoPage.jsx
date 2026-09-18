@@ -8,7 +8,7 @@ import { listar } from "../../../shared/services/crudService";
 import { MAPPING_CONTROLLER_PRODUTO } from "../service/produtoService";
 
 export default function ProdutoPage() {
-
+  
   const [lista, setLista] = useState([]);
 
   useEffect(() => {
@@ -31,6 +31,7 @@ export default function ProdutoPage() {
   return (
     <div>
       <Menu />
+
       <Breadcrumbs items={[
         { label: "Produto" },
         { label: "Listar" }
@@ -38,30 +39,48 @@ export default function ProdutoPage() {
 
       <div style={{ marginTop: '40px', marginLeft: '10%', marginRight: '10%' }}>
         <div className="overflow-x-auto shadow-sm">
+
           <div className="flex items-center justify-between mb-6" style={{ marginTop: '20px', marginLeft: '10px', marginRight: '10px' }}>
             <h1 className="text-3xl font-bold text-gray-800">
               Produtos
             </h1>
             <NewButton destino="/produto-form" />
           </div>
+
           <div className="divider divider-info" />
+
           <div className="overflow-x-auto" style={{ marginTop: '30px' }}>
             <table className="table table-zebra">
+
               <thead>
                 <tr style={{ textAlign: 'center' }}>
-                  <th>Categoria</th>
-                  <th>Codigo</th>
                   <th>Titulo</th>
+                  <th>Codigo</th>
+                  <th>Categoria</th>
                   <th>Nome da Empresa</th>
+                  <th>Ações</th>
                 </tr>
               </thead>
+
               <tbody>
                 {lista.map(produto => (
                   <tr key={produto.id}>
-                    <td style={{ width: '50%' }}>{produto.categoria}</td>
-                    <td style={{ textAlign: 'center' }}>{produto.codigo}</td>
-                    <td style={{ textAlign: 'center' }}>{produto.titulo}</td>
-                    <td style={{ textAlign: 'center' }}>{produto.empresa.nomeEmpresarial}</td>
+                    <td style={{ textAlign: 'center' }}>
+                      {produto.titulo}
+                    </td>
+
+                    <td style={{ textAlign: 'center' }}>
+                      {produto.codigo}
+                    </td>
+
+                    <td style={{ textAlign: 'center' }}>
+                      {produto.categoria?.descricao}
+                    </td>
+
+                    <td style={{ textAlign: 'center' }}>
+                      {produto.empresa?.nomeEmpresarial}
+                    </td>
+
                     <td style={{ textAlign: 'center' }}>
                       <CrudActions
                         onEdit={() => editar(produto.id)}
@@ -71,6 +90,7 @@ export default function ProdutoPage() {
                   </tr>
                 ))}
               </tbody>
+
             </table>
           </div>
         </div>

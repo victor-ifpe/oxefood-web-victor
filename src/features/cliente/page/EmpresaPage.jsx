@@ -38,15 +38,19 @@ export default function EmpresaPage() {
 
       <div style={{ marginTop: '40px', marginLeft: '10%', marginRight: '10%' }}>
         <div className="overflow-x-auto shadow-sm">
+
           <div className="flex items-center justify-between mb-6" style={{ marginTop: '20px', marginLeft: '10px', marginRight: '10px' }}>
             <h1 className="text-3xl font-bold text-gray-800">
               Empresas
             </h1>
             <NewButton destino="/empresa-form" />
           </div>
+
           <div className="divider divider-info" />
+
           <div className="overflow-x-auto" style={{ marginTop: '30px' }}>
             <table className="table table-zebra">
+
               <thead>
                 <tr style={{ textAlign: 'center' }}>
                   <th>Nome Empresarial</th>
@@ -55,12 +59,22 @@ export default function EmpresaPage() {
                   <th>Ações</th>
                 </tr>
               </thead>
+
               <tbody>
                 {lista.map(empresa => (
                   <tr key={empresa.id}>
-                    <td style={{ width: '50%' }}>{empresa.nomeEmpresarial}</td>
-                    <td style={{ textAlign: 'center' }}>{empresa.cnpj}</td>
-                    <td style={{ textAlign: 'center' }}>{empresa.site}</td>
+                    <td style={{ width: '50%', textAlign: 'center' }}>
+                      {empresa.nomeEmpresarial}
+                    </td>
+
+                    <td style={{ textAlign: 'center' }}>
+                      {empresa.cnpj}
+                    </td>
+
+                    <td style={{ textAlign: 'center' }}>
+                      {empresa.site}
+                    </td>
+
                     <td style={{ textAlign: 'center' }}>
                       <CrudActions
                         onEdit={() => editar(empresa.id)}
@@ -70,6 +84,7 @@ export default function EmpresaPage() {
                   </tr>
                 ))}
               </tbody>
+
             </table>
           </div>
         </div>
