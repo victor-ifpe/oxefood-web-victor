@@ -6,7 +6,7 @@ import ClientePage from "../features/cliente/page/ClientePage";
 import EmpresaForm from "../features/cliente/page/EmpresaForm";
 import EmpresaPage from "../features/cliente/page/EmpresaPage";
 
-// import ProdutoForm from "../features/cliente/page/ProdutoForm";
+import ProdutoForm from "../features/cliente/page/ProdutoForm";
 import ProdutoPage from "../features/cliente/page/ProdutoPage";
 
 import Home from "../features/home/page/Home";
@@ -28,7 +28,7 @@ export default function Router() {
                 <Route path="/empresa-form" element={<EmpresaForm />} />
 
                 <Route path="/produto" element={<ProdutoPage />} />
-                {/* <Route path="/produto-form" element={<ProdutoForm />} /> */}
+                <Route path="/produto-form" element={<ProdutoForm />} />
 
             </Routes>
 

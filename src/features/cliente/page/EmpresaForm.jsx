@@ -170,11 +170,8 @@ export default function EmpresaForm() {
 
                             {/* Botões */}
                             <div className="flex justify-between mt-10">
-
                                 <BackButton destino="/empresa" />
-
                                 <SaveButton save={salvar} />
-
                             </div>
 
                         </form>
