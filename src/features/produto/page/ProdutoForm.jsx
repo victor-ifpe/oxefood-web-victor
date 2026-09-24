@@ -1,21 +1,20 @@
 import { useEffect, useState } from "react";
 import { IMaskInput } from "react-imask";
+import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-
 import BackButton from "../../../shared/components/BackButton";
 import Breadcrumbs from "../../../shared/components/Breadcrumbs";
 import Footer from "../../../shared/components/Footer";
 import Menu from "../../../shared/components/Menu";
 import SaveButton from "../../../shared/components/SaveButton";
-
-import { cadastrar } from "../../../shared/services/crudService";
+import { atualizar, buscarPorId, cadastrar } from "../../../shared/services/crudService";
 import { MAPPING_CONTROLLER_PRODUTO } from "../service/produtoService";
 
 export default function ProdutoForm() {
 
+  const { idProduto } = useParams();
   const [empresas, setEmpresas] = useState([]);
   const [categorias, setCategorias] = useState([]);
-
   const [produto, setProduto] = useState({
     empresa: {
       id: ""
@@ -23,6 +22,7 @@ export default function ProdutoForm() {
     categoria: {
       id: ""
     },
+    id: null,
     codigo: "",
     titulo: "",
     descricao: "",
@@ -30,6 +30,38 @@ export default function ProdutoForm() {
     tempoEntregaMinimo: "",
     tempoEntregaMaximo: ""
   });
+
+  useEffect(() => {
+    if (idProduto) {
+      carregarProduto();
+    }
+  }, [idProduto]);
+
+  async function carregarProduto() {
+    try {
+      const data = await buscarPorId(
+        MAPPING_CONTROLLER_PRODUTO,
+        idProduto
+      );
+      setProduto({
+        id: data.id,
+        empresa: {
+          id: data.empresa?.id ?? ""
+        },
+        categoria: {
+          id: data.categoria?.id ?? ""
+        },
+        codigo: data.codigo ?? "",
+        titulo: data.titulo ?? "",
+        descricao: data.descricao ?? "",
+        valorUnitario: data.valorUnitario ?? "",
+        tempoEntregaMinimo: data.tempoEntregaMinimo ?? "",
+        tempoEntregaMaximo: data.tempoEntregaMaximo ?? ""
+      });
+    } catch (erro) {
+      toast.error("Erro ao carregar Produto.");
+    }
+  }
 
   useEffect(() => {
     async function carregarEmpresas() {
@@ -67,20 +99,17 @@ export default function ProdutoForm() {
     carregarCategorias();
   }, []);
 
-  async function salvar(e) {
-    if (e) {
-      e.preventDefault();
-    }
+  async function salvar() {
     try {
-      await cadastrar(
-        MAPPING_CONTROLLER_PRODUTO,
-        produto
-      );
-      toast.success("Produto cadastrado com sucesso!");
+      if (idProduto) {
+        await atualizar(MAPPING_CONTROLLER_PRODUTO, produto);
+        toast.success("Produto alterado com sucesso!");
+      } else {
+        await cadastrar(MAPPING_CONTROLLER_PRODUTO, produto);
+        toast.success("Produto cadastrado com sucesso!");
+      }
     } catch (erro) {
-      console.error(erro);
-      toast.error("Erro ao cadastrar produto.");
-
+      toast.error("Erro ao salvar Produto.");
     }
   }
 
@@ -89,17 +118,24 @@ export default function ProdutoForm() {
 
       <Menu />
 
-      <Breadcrumbs items={[
-        { label: "Produto" },
-        { label: "Cadastrar" }
-      ]} />
+      {idProduto ?
+        <Breadcrumbs items={[
+          { label: "Produto" },
+          { label: "Alterar" }
+        ]} />
+        :
+        <Breadcrumbs items={[
+          { label: "Produto" },
+          { label: "Cadastrar" }
+        ]} />
+      }
 
       <div style={{ marginTop: "40px", marginLeft: "10%", marginRight: "10%" }}>
         <div className="overflow-x-auto shadow-sm">
 
           <div className="flex items-center justify-between mb-6" style={{ marginTop: "20px", marginLeft: "10px", marginRight: "10px" }}>
             <h1 className="text-3xl font-bold text-gray-800">
-              Novo Produto
+              {idProduto ? "Alterar Produto" : "Novo Produto"}
             </h1>
           </div>
 
@@ -228,7 +264,7 @@ export default function ProdutoForm() {
 
               {/* Valor Unitário + Tempos de Entrega */}
               <div className="flex w-full">
-                
+
                 {/* Valor Unitário */}
                 <div className="card rounded-box grid grow p-8" style={{ padding: "30px" }}>
                   <fieldset className="fieldset w-full">

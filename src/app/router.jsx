@@ -19,16 +19,16 @@ export default function Router() {
 
             <Routes>
 
-                <Route path="/home" element={<Home />} />
+                <Route path="/" element={<Home />} />
 
                 <Route path="/cliente" element={<ClientePage />} />
-                <Route path="/cliente-form" element={<ClienteForm />} />
+                <Route path="/cliente-form/:idCliente?" element={<ClienteForm />} />
 
                 <Route path="/empresa" element={<EmpresaPage />} />
-                <Route path="/empresa-form" element={<EmpresaForm />} />
+                <Route path="/empresa-form/:idEmpresa?" element={<EmpresaForm />} />
 
                 <Route path="/produto" element={<ProdutoPage />} />
-                <Route path="/produto-form" element={<ProdutoForm />} />
+                <Route path="/produto-form/:idProduto?" element={<ProdutoForm />} />
 
             </Routes>
 

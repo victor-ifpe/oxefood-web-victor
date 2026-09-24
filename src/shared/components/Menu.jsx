@@ -11,7 +11,7 @@ export default function Menu() {
                 <span className="megamenu-active"></span>
 
                 <button className="btn btn-ghost">
-                    <a href="/home">
+                    <a href="/">
                         <strong>Home</strong>
                     </a>
                 </button>
