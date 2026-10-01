@@ -1,17 +1,31 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import Breadcrumbs from "../../../shared/components/Breadcrumbs";
 import CrudActions from "../../../shared/components/CrudActions";
 import Footer from "../../../shared/components/Footer";
 import Menu from "../../../shared/components/Menu";
 import NewButton from "../../../shared/components/NewButton";
-import { listar } from "../../../shared/services/crudService";
+import { buscarPorId, listar, remover } from "../../../shared/services/crudService";
 import { MAPPING_CONTROLLER_PRODUTO } from "../service/produtoService";
 
 export default function ProdutoPage() {
 
   const [lista, setLista] = useState([]);
   const navigate = useNavigate();
+
+  const [produto, setProduto] = useState({
+    id: null,
+    codigo: "",
+    titulo: "",
+    descricao: "",
+    valorUnitario: "",
+    tempoEntregaMinimo: "",
+    tempoEntregaMaximo: "",
+    empresa: null,
+    categoria: null
+  });
+
 
   useEffect(() => {
     carregar();
@@ -27,8 +41,50 @@ export default function ProdutoPage() {
   }
 
   async function confirmarRemover(id) {
-    if (confirm("Deseja realmente excluir este produto?")) {
-      console.log(id);
+
+    if (!confirm("Deseja realmente excluir esta Empresa?")) {
+      return;
+    }
+
+    try {
+
+      await remover(MAPPING_CONTROLLER_PRODUTO, id);
+      await carregar();
+      toast.success("Produto removido com sucesso!");
+
+    } catch (erro) {
+
+      console.error(erro);
+      toast.error("Erro ao tentar remover o produto.");
+    }
+  }
+
+  async function detalhar(id) {
+
+    try {
+
+      const data = await buscarPorId(
+        MAPPING_CONTROLLER_PRODUTO,
+        id
+      );
+
+      setProduto({
+        id: data.id,
+        codigo: data.codigo ?? "",
+        titulo: data.titulo ?? "",
+        descricao: data.descricao ?? "",
+        valorUnitario: data.valorUnitario ?? "",
+        tempoEntregaMinimo: data.tempoEntregaMinimo ?? "",
+        tempoEntregaMaximo: data.tempoEntregaMaximo ?? "",
+        empresa: data.empresa ?? null,
+        categoria: data.categoria ?? null
+      });
+
+
+      document.getElementById('modal-detalhar').showModal()
+
+    } catch (erro) {
+      toast.error("Erro ao carregar produto.");
     }
   }
 
@@ -87,6 +143,7 @@ export default function ProdutoPage() {
 
                     <td style={{ textAlign: 'center' }}>
                       <CrudActions
+                        onDetail={() => detalhar(produto.id)}
                         onEdit={() => editar(produto.id)}
                         onDelete={() => confirmarRemover(produto.id)}
                       />
@@ -94,6 +151,44 @@ export default function ProdutoPage() {
                   </tr>
                 ))}
               </tbody>
+
+              <dialog id="modal-detalhar" className="modal">
+                <div className="modal-box">
+                  <h3 className="font-bold text-lg">Dados do Produto</h3>
+                  <div className="divider" />
+                  <p className="py-4">
+                    <strong>Código:</strong> {produto.codigo}
+                  </p>
+                  <p className="py-4">
+                    <strong>Título:</strong> {produto.titulo}
+                  </p>
+                  <p className="py-4">
+                    <strong>Descrição:</strong> {produto.descricao}
+                  </p>
+                  <p className="py-4">
+                    <strong>Valor Unitário:</strong> {produto.valorUnitario}
+                  </p>
+                  <p className="py-4">
+                    <strong>Tempo de Entrega Mínimo:</strong> {produto.tempoEntregaMinimo}
+                  </p>
+                  <p className="py-4">
+                    <strong>Tempo de Entrega Máximo:</strong> {produto.tempoEntregaMaximo}
+                  </p>
+                  <p className="py-4">
+                    <strong>Empresa:</strong> {produto.empresa?.nomeFantasia}
+                  </p>
+                  <p className="py-4">
+                    <strong>Categoria:</strong> {produto.categoria?.descricao}
+                  </p>
+
+                  <div className="modal-action">
+                    <form method="dialog">
+                      <button className="btn">Fechar</button>
+                    </form>
+                  </div>
+                </div>
+              </dialog>
+
 
             </table>
           </div>
