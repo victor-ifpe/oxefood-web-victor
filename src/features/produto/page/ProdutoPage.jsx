@@ -42,7 +42,7 @@ export default function ProdutoPage() {
 
   async function confirmarRemover(id) {
 
-    if (!confirm("Deseja realmente excluir esta Empresa?")) {
+    if (!confirm("Deseja realmente excluir este Produto?")) {
       return;
     }
 
