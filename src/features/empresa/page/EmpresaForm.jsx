@@ -134,11 +134,12 @@ export default function EmpresaForm() {
                                 </label>
                                 <IMaskInput
                                     mask="00.000.000/0000-00"
+                                    unmask={true}
                                     placeholder="00.000.000/0000-00"
                                     className="input input-bordered w-full"
                                     value={empresa.cnpj}
                                     onAccept={(value) =>
-                                        setEmpresa({ ...empresa, cnpj: value, })
+                                        setEmpresa({ ...empresa, cnpj: value })
                                     }
                                 />
                             </div>
@@ -166,11 +167,12 @@ export default function EmpresaForm() {
                                 </label>
                                 <IMaskInput
                                     mask="(00) 0 0000-0000"
+                                    unmask={true}
                                     placeholder="(00) 0 0000-0000"
                                     className="input input-bordered w-full"
                                     value={empresa.fone}
                                     onAccept={(value) =>
-                                        setEmpresa({ ...empresa, fone: value, })
+                                        setEmpresa({ ...empresa, fone: value })
                                     }
                                 />
                             </div>
@@ -181,12 +183,13 @@ export default function EmpresaForm() {
                                     Telefone Alternativo
                                 </label>
                                 <IMaskInput
-                                    mask="(00) 0 0000-0000"
-                                    placeholder="(00) 0 0000-0000"
+                                    mask="(00) 0000-0000"
+                                    unmask={true}
+                                    placeholder="(00) 0000-0000"
                                     className="input input-bordered w-full"
                                     value={empresa.foneAlternativo}
                                     onAccept={(value) =>
-                                        setEmpresa({ ...empresa, foneAlternativo: value, })
+                                        setEmpresa({ ...empresa, foneAlternativo: value })
                                     }
                                 />
                             </div>
