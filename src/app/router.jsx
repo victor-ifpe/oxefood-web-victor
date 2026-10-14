@@ -9,6 +9,9 @@ import EmpresaPage from "../features/empresa/page/EmpresaPage";
 import ProdutoForm from "../features/produto/page/ProdutoForm";
 import ProdutoPage from "../features/produto/page/ProdutoPage";
 
+import VotoForm from "../features/voto/page/VotoForm";
+import VotoPage from "../features/voto/page/VotoPage";
+
 import Home from "../features/home/page/Home";
 
 export default function Router() {
@@ -29,6 +32,9 @@ export default function Router() {
 
                 <Route path="/produto" element={<ProdutoPage />} />
                 <Route path="/produto-form/:idProduto?" element={<ProdutoForm />} />
+
+                <Route path="/voto" element={<VotoPage />} />
+                <Route path="/voto-form/:idProduto?" element={<VotoForm />} />
 
             </Routes>
 
