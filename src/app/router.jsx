@@ -34,7 +34,7 @@ export default function Router() {
                 <Route path="/produto-form/:idProduto?" element={<ProdutoForm />} />
 
                 <Route path="/voto" element={<VotoPage />} />
-                <Route path="/voto-form/:idProduto?" element={<VotoForm />} />
+                <Route path="/voto-form/:idVoto?" element={<VotoForm />} />
 
             </Routes>
 
