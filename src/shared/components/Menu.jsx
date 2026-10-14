@@ -48,13 +48,13 @@ export default function Menu() {
                     </ul>
                 </div> */}
 
-                <button popoverTarget="menu-categoriasProdutos"> <strong> Categoria de Produtos </strong> </button>
+                {/* <button popoverTarget="menu-categoriasProdutos"> <strong> Categoria de Produtos </strong> </button>
                 <div id="menu-categoriasProdutos" popover="auto">
                     <ul className="menu">
                         <li><a href="/categoriaProduto">Listar</a></li>
                         <li><a href="/categoriaProduto-form">Cadastrar</a></li>
                     </ul>
-                </div>
+                </div> */}
 
             </div>
 
