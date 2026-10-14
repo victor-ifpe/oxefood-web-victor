@@ -9,7 +9,6 @@ import Menu from "../../../shared/components/Menu";
 import SaveButton from "../../../shared/components/SaveButton";
 import { atualizar, buscarPorId, cadastrar } from "../../../shared/services/crudService";
 import { MAPPING_CONTROLLER_PRODUTO } from "../service/produtoService";
-import { MAPPING_CONTROLLER_CATEGORIA_PRODUTO } from "../../produto/service/categoriaProdutoService";
 
 export default function ProdutoForm() {
 
@@ -83,14 +82,19 @@ export default function ProdutoForm() {
 
     async function carregarCategorias() {
       try {
-        const data = await listar(MAPPING_CONTROLLER_CATEGORIA_PRODUTO);
-        setCategorias(data);
+        const resposta = await fetch(
+          "http://localhost:8080/api/categoria-produto"
+        );
+        if (!resposta.ok) {
+          throw new Error("Erro ao buscar categorias");
+        }
+        const dados = await resposta.json();
+        setCategorias(dados);
       } catch (erro) {
-        console.log(erro)
-        toast.error("Erro ao carregar as categorias de produto.");
+        console.error(erro);
+        toast.error("Erro ao carregar categorias.");
       }
     }
-    
     carregarEmpresas();
     carregarCategorias();
   }, []);
