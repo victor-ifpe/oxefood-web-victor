@@ -47,7 +47,21 @@ export default function ClienteForm() {
     }
   }
 
+
   async function salvar() {
+    const telefoneCelular = cliente.foneCelular?.replace(/\D/g, "") || "";
+    const telefoneFixo = cliente.foneFixo?.replace(/\D/g, "") || "";
+
+    if (!telefoneCelular.startsWith("81")) {
+      toast.error("O telefone celular deve começar com 81.");
+      return;
+    }
+
+    if (!telefoneFixo.startsWith("81")) {
+      toast.error("O telefone fixo deve começar com 81.");
+      return;
+    }
+
     try {
       if (idCliente) {
         await atualizar(MAPPING_CONTROLLER_CLIENTE, cliente);
@@ -60,6 +74,7 @@ export default function ClienteForm() {
       toast.error("Erro ao salvar cliente.");
     }
   }
+
 
   return (
 
