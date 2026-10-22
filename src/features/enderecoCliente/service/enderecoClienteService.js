@@ -1,0 +1,1 @@
+export const MAPPING_CONTROLLER_ENDERECO_CLIENTE = "/api/cliente/endereco";

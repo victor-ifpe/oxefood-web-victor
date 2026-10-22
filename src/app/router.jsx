@@ -1,3 +1,4 @@
+
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import ClienteForm from "../features/cliente/page/ClienteForm";
@@ -14,6 +15,9 @@ import CategoriaProdutoPage from "../features/categoriaProduto/page/CategoriaPro
 
 import VotoForm from "../features/voto/page/VotoForm";
 import VotoPage from "../features/voto/page/VotoPage";
+
+import EnderecoClienteForm from "../features/enderecoCliente/page/EnderecoClienteForm";
+import EnderecoClientePage from "../features/enderecoCliente/page/EnderecoClientePage";
 
 import Home from "../features/home/page/Home";
 
@@ -33,10 +37,16 @@ export default function Router() {
                 <Route path="/produto-form/:idProduto?" element={<ProdutoForm />} />
 
                 <Route path="/categoria-produto" element={<CategoriaProdutoPage />} />
-                <Route path="/categoria-produto-form/:idCategoriaProduto?" element={<CategoriaProdutoForm />} />
+                <Route
+                    path="/categoria-produto-form/:idCategoriaProduto?"
+                    element={<CategoriaProdutoForm />}
+                />
 
                 <Route path="/voto" element={<VotoPage />} />
                 <Route path="/voto-form/:idVoto?" element={<VotoForm />} />
+
+                <Route path="/endereco-cliente" element={<EnderecoClientePage />} />
+                <Route path="/endereco-cliente-form/:clienteId?/:enderecoId?" element={<EnderecoClienteForm />} />
             </Routes>
         </BrowserRouter>
     );
