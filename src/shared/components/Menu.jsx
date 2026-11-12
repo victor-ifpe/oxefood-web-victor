@@ -1,46 +1,72 @@
+import { logout } from "../../features/authentication/service/authenticationService";
+
 export default function Menu() {
+  return (
+    <div style={{ marginTop: "20px", marginLeft: "10%", marginRight: "10%" }}>
+      <button className="btn sm:hidden" popoverTarget="main-menu">
+        {" "}
+        Menu{" "}
+      </button>
 
-    return (
+      <div
+        className="megamenu max-sm:megamenu-vertical p-2 border border-emerald-100 bg-emerald-50 rounded-box shadow-lg"
+        id="main-menu"
+        popover="auto"
+      >
+        <span className="megamenu-active"></span>
 
-        <div style={{ marginTop: '20px', marginLeft: '10%', marginRight: '10%' }}>
+        <button className="btn btn-ghost">
+          <a href="/home">
+            <strong>Home</strong>
+          </a>
+        </button>
 
-            <button className="btn sm:hidden" popoverTarget="main-menu" > Menu </button>
+        <button popoverTarget="menu-clientes">
+          {" "}
+          <strong> Cliente </strong>{" "}
+        </button>
+        <div id="menu-clientes" popover="auto">
+          <ul className="menu">
+            <li>
+              <a href="/cliente">Listar</a>
+            </li>
+            <li>
+              <a href="/cliente-form">Cadastrar</a>
+            </li>
+          </ul>
+        </div>
 
-            <div className="megamenu max-sm:megamenu-vertical p-2 border border-emerald-100 bg-emerald-50 rounded-box shadow-lg" id="main-menu" popover="auto">
+        <button popoverTarget="menu-empresas">
+          {" "}
+          <strong> Empresas </strong>{" "}
+        </button>
+        <div id="menu-empresas" popover="auto">
+          <ul className="menu">
+            <li>
+              <a href="/empresa">Listar</a>
+            </li>
+            <li>
+              <a href="/empresa-form">Cadastrar</a>
+            </li>
+          </ul>
+        </div>
 
-                <span className="megamenu-active"></span>
+        <button popoverTarget="menu-produtos">
+          {" "}
+          <strong> Produto </strong>{" "}
+        </button>
+        <div id="menu-produtos" popover="auto">
+          <ul className="menu">
+            <li>
+              <a href="/produto">Listar</a>
+            </li>
+            <li>
+              <a href="/produto-form">Cadastrar</a>
+            </li>
+          </ul>
+        </div>
 
-                <button className="btn btn-ghost">
-                    <a href="/">
-                        <strong>Home</strong>
-                    </a>
-                </button>
-
-                <button popoverTarget="menu-clientes"> <strong> Cliente </strong> </button>
-                <div id="menu-clientes" popover="auto">
-                    <ul className="menu">
-                        <li><a href="/cliente">Listar</a></li>
-                        <li><a href="/cliente-form">Cadastrar</a></li>
-                    </ul>
-                </div>
-
-                <button popoverTarget="menu-empresas"> <strong> Empresas </strong> </button>
-                <div id="menu-empresas" popover="auto">
-                    <ul className="menu">
-                        <li><a href="/empresa">Listar</a></li>
-                        <li><a href="/empresa-form">Cadastrar</a></li>
-                    </ul>
-                </div>
-
-                <button popoverTarget="menu-produtos"> <strong> Produto </strong> </button>
-                <div id="menu-produtos" popover="auto">
-                    <ul className="menu">
-                        <li><a href="/produto">Listar</a></li>
-                        <li><a href="/produto-form">Cadastrar</a></li>
-                    </ul>
-                </div>
-
-                {/* <button popoverTarget="menu-votos"> <strong> Votos </strong> </button>
+        {/* <button popoverTarget="menu-votos"> <strong> Votos </strong> </button>
                 <div id="menu-votos" popover="auto">
                     <ul className="menu">
                         <li><a href="/voto">Listar</a></li>
@@ -48,26 +74,43 @@ export default function Menu() {
                     </ul>
                 </div> */}
 
-                <button popoverTarget="menu-categoriasProdutos"> <strong> Categoria de Produtos </strong> </button>
-                <div id="menu-categoriasProdutos" popover="auto">
-                    <ul className="menu">
-                        <li><a href="/categoria-produto">Listar</a></li>
-                        <li><a href="/categoria-produto-form">Cadastrar</a></li>
-                    </ul>
-                </div>
-
-
-                <button popoverTarget="menu-enderecosClientes"> <strong> Endereço do Cliente </strong> </button>
-                <div id="menu-enderecosClientes" popover="auto">
-                    <ul className="menu">
-                        <li><a href="/endereco-cliente">Listar</a></li>
-                        <li><a href="/endereco-cliente-form">Cadastrar</a></li>
-                    </ul>
-                </div>
-
-
-            </div>
-
+        <button popoverTarget="menu-categoriasProdutos">
+          {" "}
+          <strong> Categoria de Produtos </strong>{" "}
+        </button>
+        <div id="menu-categoriasProdutos" popover="auto">
+          <ul className="menu">
+            <li>
+              <a href="/categoria-produto">Listar</a>
+            </li>
+            <li>
+              <a href="/categoria-produto-form">Cadastrar</a>
+            </li>
+          </ul>
         </div>
-    );
+
+        <button popoverTarget="menu-enderecosClientes">
+          {" "}
+          <strong> Endereço do Cliente </strong>{" "}
+        </button>
+        <div id="menu-enderecosClientes" popover="auto">
+          <ul className="menu">
+            <li>
+              <a href="/endereco-cliente">Listar</a>
+            </li>
+            <li>
+              <a href="/endereco-cliente-form">Cadastrar</a>
+            </li>
+          </ul>
+        </div>
+
+        <button className="btn btn-ghost">
+          <a href="/" onClick={logout}>
+            Logout
+          </a>
+        </button>
+        
+      </div>
+    </div>
+  );
 }
