@@ -18,7 +18,7 @@ import {
 } from "../../../shared/services/crudService";
 
 import { MAPPING_CONTROLLER_PRODUTO } from "../service/produtoService";
-import { MAPPING_CONTROLLER_CATEGORIA_PRODUTO } from "../../produto/service/categoriaProdutoService";
+import { MAPPING_CONTROLLER_CATEGORIA_PRODUTO, saveImage } from "../../produto/service/categoriaProdutoService";
 import { MAPPING_CONTROLLER_EMPRESA } from "../../produto/service/empresaService";
 
 export default function ProdutoForm() {
@@ -26,6 +26,10 @@ export default function ProdutoForm() {
 
   const [listaCategoria, setListaCategoria] = useState([]);
   const [listaEmpresa, setListaEmpresa] = useState([]);
+
+  const [imagem, setImagem] = useState(null);
+  const [preview, setPreview] = useState(null);
+
 
   const [produto, setProduto] = useState({
     id: null,
@@ -41,6 +45,7 @@ export default function ProdutoForm() {
     valorUnitario: "",
     tempoEntregaMinimo: "",
     tempoEntregaMaximo: "",
+    imagem: data.imagem ?? ""
   });
 
   useEffect(() => {
@@ -90,6 +95,41 @@ export default function ProdutoForm() {
     }
   }
 
+  async function atualizaImagem(idProduto) {
+
+    try {
+
+      let formData = new FormData();
+      formData.append('imagem', imagem);
+
+      await saveImage(idProduto, formData);
+      toast.success("Imagem cadastrada com sucesso!");
+
+    } catch (erro) {
+
+      console.log(erro)
+      toast.error("Erro ao tentar salvar a imagem o produto.");
+    }
+  }
+
+  const handleImagemChange = (event) => {
+
+    const file = event.target.files[0];
+    setImagem(file);
+
+    // Gera uma URL para visualização da imagem
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setPreview(null);
+    }
+  };
+
+
   async function carregarCategoriasProduto() {
     try {
       const data = await listar(
@@ -125,9 +165,17 @@ export default function ProdutoForm() {
       if (idProduto) {
         await atualizar(MAPPING_CONTROLLER_PRODUTO, produtoParaSalvar);
         toast.success("Produto alterado com sucesso!");
+
+        if (imagem) {
+          atualizaImagem(idProduto);
+        }
+
       } else {
-        await cadastrar(MAPPING_CONTROLLER_PRODUTO, produtoParaSalvar);
+        const produtoCadastrado = await cadastrar(MAPPING_CONTROLLER_PRODUTO, produto);
         toast.success("Produto cadastrado com sucesso!");
+
+        atualizaImagem(produtoCadastrado.id);
+
       }
     } catch (erro) {
       console.error("Erro ao salvar produto:", erro.response?.data ?? erro);
@@ -429,6 +477,63 @@ export default function ProdutoForm() {
                     />
                   </fieldset>
                 </div>
+              </div>
+
+              <div className="card rounded-box grid grow p-8" style={{ padding: '10px' }}>
+
+                <fieldset className="fieldset w-full">
+
+                  <label className="fieldset-legend" htmlFor="imagem">
+                    Imagem do Produto
+                  </label>
+
+                  <input
+                    type="file"
+                    id="imagem"
+                    accept="image/*"
+                    onChange={handleImagemChange}
+                    className="file-input file-input-bordered w-full"
+                  />
+
+                </fieldset>
+
+                {/* Visualização da imagem selecionada */}
+                {preview && (
+
+                  <div className="mt-4">
+
+                    <p className="text-sm font-semibold text-gray-600 mb-2">
+                      Pré-visualização da imagem:
+                    </p>
+
+                    <img
+                      src={preview}
+                      alt="Pré-visualização do produto"
+                      className="w-40 h-40 object-contain border border-gray-300 rounded-lg p-2"
+                    />
+
+                  </div>
+
+                )}
+                {/* Visualização da imagem já cadastrada */}
+                {!preview && produto.imagem && (
+
+                  <div className="mt-4">
+
+                    <p className="text-sm font-semibold text-gray-600 mb-2">
+                      Imagem cadastrada:
+                    </p>
+
+                    <img
+                      src={`/imagens_cadastradas/${produto.imagem}`}
+                      alt="Imagem do produto"
+                      className="w-40 h-40 object-contain border border-gray-300 rounded-lg p-2"
+                    />
+
+                  </div>
+
+                )}
+
               </div>
 
               {/* Botões */}

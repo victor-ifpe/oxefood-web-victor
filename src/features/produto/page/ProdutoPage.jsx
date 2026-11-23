@@ -231,6 +231,7 @@ export default function ProdutoPage() {
 
               <thead>
                 <tr style={{ textAlign: 'center' }}>
+                  <th>Produto</th>
                   <th>Titulo</th>
                   <th>Codigo</th>
                   <th>Categoria</th>
@@ -242,6 +243,14 @@ export default function ProdutoPage() {
               <tbody>
                 {lista.map(produto => (
                   <tr key={produto.id}>
+                    <td style={{ textAlign: 'center' }}>
+                      <img
+                        src={`/imagens_cadastradas/${produto.imagem}`}
+                        alt="Imagem do produto"
+                        className="w-40 h-40 object-contain border border-gray-300 rounded-lg p-2"
+                      />
+                    </td>
+
                     <td style={{ textAlign: 'center' }}>
                       {produto.titulo}
                     </td>
