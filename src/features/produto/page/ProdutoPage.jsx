@@ -7,13 +7,20 @@ import Footer from "../../../shared/components/Footer";
 import Menu from "../../../shared/components/Menu";
 import NewButton from "../../../shared/components/NewButton";
 import { buscarPorId, listar, remover } from "../../../shared/services/crudService";
-import { MAPPING_CONTROLLER_PRODUTO } from "../service/produtoService";
+import FilterButton from "../../../shared/components/FilterButton";
+import { MAPPING_CONTROLLER_CATEGORIA_PRODUTO } from "../../categoriaproduto/service/categoriaProdutoService";
+import { filtrar, MAPPING_CONTROLLER_PRODUTO } from "../service/produtoService";
 
 export default function ProdutoPage() {
 
   const [lista, setLista] = useState([]);
   const navigate = useNavigate();
 
+  const [menuFiltro, setMenuFiltro] = useState();
+  const [codigo, setCodigo] = useState();
+  const [titulo, setTitulo] = useState();
+  const [idCategoria, setIdCategoria] = useState();
+  const [listaCategoriaProduto, setListaCategoriaProduto] = useState([]);
   const [produto, setProduto] = useState({
     id: null,
     codigo: "",
@@ -26,7 +33,6 @@ export default function ProdutoPage() {
     categoria: null
   });
 
-
   useEffect(() => {
     carregar();
   }, []);
@@ -34,6 +40,9 @@ export default function ProdutoPage() {
   async function carregar() {
     const data = await listar(MAPPING_CONTROLLER_PRODUTO);
     setLista(data);
+
+    const listaCategoriaProduto = await listar(MAPPING_CONTROLLER_CATEGORIA_PRODUTO);
+    setListaCategoriaProduto(listaCategoriaProduto);
   }
 
   function editar(id) {
@@ -57,6 +66,53 @@ export default function ProdutoPage() {
       console.error(erro);
       toast.error("Erro ao tentar remover o produto.");
     }
+  }
+
+  function handleMenuFiltro() {
+
+    if (menuFiltro === true) {
+      setMenuFiltro(false);
+    } else {
+      setMenuFiltro(true);
+    }
+  }
+
+  function handleChangeCodigo(value) {
+
+    filtrarProdutos(value, titulo, idCategoria);
+  }
+
+  function handleChangeTitulo(value) {
+
+    filtrarProdutos(codigo, value, idCategoria);
+  }
+
+  function handleChangeCategoriaProduto(value) {
+
+    filtrarProdutos(codigo, titulo, value);
+  }
+
+  async function filtrarProdutos(codigoParam, tituloParam, idCategoriaParam) {
+
+    let formData = new FormData();
+
+    if (codigoParam !== undefined) {
+      setCodigo(codigoParam)
+      formData.append('codigo', codigoParam);
+    }
+
+    if (tituloParam !== undefined) {
+      setTitulo(tituloParam)
+      formData.append('titulo', tituloParam);
+    }
+
+    if (idCategoriaParam !== undefined) {
+      setIdCategoria(idCategoriaParam)
+      formData.append('idCategoria', idCategoriaParam);
+    }
+
+    const data = await filtrar(formData);
+    setLista(data);
   }
 
   async function detalhar(id) {
@@ -104,8 +160,69 @@ export default function ProdutoPage() {
             <h1 className="text-3xl font-bold text-gray-800">
               Produtos
             </h1>
-            <NewButton destino="/produto-form" />
+
+            <div className="flex items-center gap-2">
+              <FilterButton onClick={() => handleMenuFiltro()} />
+              <NewButton destino="/produto-form" />
+            </div>
           </div>
+
+
+          {menuFiltro ?
+
+            <div className="overflow-x-auto" style={{ padding: '30px' }}>
+
+              <div className="flex w-full" >
+                <div className="card rounded-box grid grow p-8" style={{ padding: '10px' }}>
+
+                  <fieldset className="fieldset w-full">
+                    <label className="fieldset-legend" htmlFor="titulo">Título</label>
+                    <input
+                      type="text"
+                      id="titulo"
+                      className="input input-bordered w-full"
+                      value={titulo}
+                      onChange={e => handleChangeTitulo(e.target.value)}
+                    />
+                  </fieldset>
+                </div>
+                <div className="card rounded-box grid grow p-8" style={{ padding: '10px' }}>
+
+                  <fieldset className="fieldset w-full">
+                    <label className="fieldset-legend" htmlFor="codigo">Código do Produto</label>
+                    <input
+                      type="text"
+                      id="codigo"
+                      className="input input-bordered w-full"
+                      value={codigo}
+                      onChange={e => handleChangeCodigo(e.target.value)}
+                    />
+                  </fieldset>
+                </div>
+              </div>
+              <div className="card rounded-box grid grow p-8" style={{ padding: '10px' }}>
+
+                <fieldset className="fieldset">
+                  <legend className="fieldset-legend">Categoria</legend>
+                  <select
+                    className="select  w-full"
+                    value={idCategoria}
+                    onChange={(e) =>
+                      handleChangeCategoriaProduto(e.target.value)
+                    }
+                  >
+                    <option value="">Selecione ...</option>
+                    {listaCategoriaProduto.map((categoria, index) => (
+                      <option key={index} value={categoria.id}>
+                        {categoria.descricao}
+                      </option>
+                    ))}
+                  </select>
+                </fieldset>
+              </div>
+            </div>
+
+            : ""}
 
           <div className="divider divider-info" />
 
