@@ -1,19 +1,25 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Breadcrumbs from "../../../shared/components/Breadcrumbs";
 import CrudActions from "../../../shared/components/CrudActions";
+import FilterButton from "../../../shared/components/FilterButton";
 import Footer from "../../../shared/components/Footer";
 import Menu from "../../../shared/components/Menu";
 import NewButton from "../../../shared/components/NewButton";
 import { buscarPorId, listar, remover } from "../../../shared/services/crudService";
 import { formatarData } from "../../../shared/util/dateUtils";
-import { MAPPING_CONTROLLER_CLIENTE } from "../service/clienteService";
+import { filtrar, MAPPING_CONTROLLER_CLIENTE } from "../service/clienteService";
 
 export default function ClientePage() {
 
     const [lista, setLista] = useState([]);
     const navigate = useNavigate();
+
+    const [menuFiltro, setMenuFiltro] = useState(true);
+    const [pesquisa, setPesquisa] = useState("");
+    const [pesquisaAplicada, setPesquisaAplicada] = useState(null);
+    const ultimaRequisicao = useRef(0);
 
     const [cliente, setCliente] = useState({
         id: null,
@@ -26,12 +32,51 @@ export default function ClientePage() {
 
 
     useEffect(() => {
-        carregar();
-    }, []);
+        // Aguarda o usuário terminar de digitar antes de consultar; sem termo, carrega a listagem completa
+        const temporizador = setTimeout(() => {
+            carregar();
+        }, pesquisa === "" ? 0 : 300);
+
+        return () => clearTimeout(temporizador);
+    }, [pesquisa]);
 
     async function carregar() {
-        const data = await listar(MAPPING_CONTROLLER_CLIENTE);
-        setLista(data);
+
+        const termo = pesquisa.trim();
+        const requisicao = ++ultimaRequisicao.current;
+
+        try {
+
+            let data;
+
+            if (termo === "") {
+                data = await listar(MAPPING_CONTROLLER_CLIENTE);
+            } else {
+                let formData = new FormData();
+                formData.append('pesquisa', termo);
+                data = await filtrar(formData);
+            }
+
+            // Ignora respostas de consultas antigas
+            if (requisicao === ultimaRequisicao.current) {
+                setLista(data);
+                setPesquisaAplicada(termo);
+            }
+
+        } catch (erro) {
+
+            console.error(erro);
+            toast.error("Erro ao carregar os clientes.");
+        }
+    }
+
+    function handleMenuFiltro() {
+
+        if (menuFiltro) {
+            setPesquisa("");
+        }
+
+        setMenuFiltro(!menuFiltro);
     }
 
     function editar(id) {
@@ -99,8 +144,45 @@ export default function ClientePage() {
                         <h1 className="text-3xl font-bold text-gray-800">
                             Clientes
                         </h1>
-                        <NewButton destino="/cliente-form" />
+                        <div className="flex items-center gap-2">
+                            <FilterButton onClick={() => handleMenuFiltro()} />
+                            <NewButton destino="/cliente-form" />
+                        </div>
                     </div>
+
+                    {menuFiltro ?
+
+                        <div className="overflow-x-auto" style={{ padding: '30px' }}>
+
+                            <div className="flex w-full items-end gap-2">
+                                <div className="card rounded-box grid grow p-8" style={{ padding: '10px' }}>
+
+                                    <fieldset className="fieldset w-full">
+                                        <label className="fieldset-legend" htmlFor="pesquisa">Nome ou CPF</label>
+                                        <input
+                                            type="text"
+                                            id="pesquisa"
+                                            placeholder="Digite o nome ou o CPF (com ou sem pontuação)"
+                                            className="input input-bordered w-full"
+                                            value={pesquisa}
+                                            onChange={e => setPesquisa(e.target.value)}
+                                        />
+                                    </fieldset>
+                                </div>
+
+                                <button
+                                    type="button"
+                                    onClick={() => setPesquisa("")}
+                                    disabled={pesquisa === ""}
+                                    className="btn bg-gray-200 text-gray-700 border-gray-300 hover:bg-gray-300"
+                                    style={{ marginBottom: '10px' }}
+                                >
+                                    Limpar
+                                </button>
+                            </div>
+                        </div>
+
+                        : ""}
 
                     <div className="divider divider-info" />
 
@@ -117,6 +199,16 @@ export default function ClientePage() {
                             </thead>
 
                             <tbody>
+                                {pesquisaAplicada !== null && lista.length === 0 && (
+                                    <tr>
+                                        <td colSpan={4} style={{ textAlign: 'center' }}>
+                                            {pesquisaAplicada !== ""
+                                                ? "Nenhum cliente encontrado para a pesquisa informada."
+                                                : "Nenhum cliente cadastrado."}
+                                        </td>
+                                    </tr>
+                                )}
+
                                 {lista.map(cliente => (
 
                                     <tr key={cliente.id}>

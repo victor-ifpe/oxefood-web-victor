@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { IMaskInput } from "react-imask";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -8,7 +8,11 @@ import Footer from "../../../shared/components/Footer";
 import Menu from "../../../shared/components/Menu";
 import SaveButton from "../../../shared/components/SaveButton";
 import { atualizar, buscarPorId, cadastrar } from "../../../shared/services/crudService";
-import { MAPPING_CONTROLLER_EMPRESA } from "../service/empresaService";
+import { MAPPING_CONTROLLER_EMPRESA, saveLogo } from "../service/empresaService";
+
+const TAMANHO_MAXIMO_LOGO = 2 * 1024 * 1024;
+const TIPOS_LOGO_PERMITIDOS = ["image/png", "image/jpeg", "image/webp"];
+const EXTENSOES_LOGO_PERMITIDAS = /\.(png|jpe?g|webp)$/i;
 
 export default function EmpresaForm() {
 
@@ -23,6 +27,11 @@ export default function EmpresaForm() {
         fone: "",
         foneAlternativo: "",
     });
+
+    const [logo, setLogo] = useState(null);
+    const [preview, setPreview] = useState(null);
+    const [logoCadastrada, setLogoCadastrada] = useState("");
+    const inputLogo = useRef(null);
 
     useEffect(() => {
         if (idEmpresa) {
@@ -46,19 +55,91 @@ export default function EmpresaForm() {
                 fone: data.fone ?? "",
                 foneAlternativo: data.foneAlternativo ?? "",
             });
+            setLogoCadastrada(data.logo ?? "");
         } catch (erro) {
             toast.error("Erro ao carregar Empresa.");
         }
     }
+
+    function limparLogoSelecionada() {
+        setLogo(null);
+        setPreview(null);
+
+        if (inputLogo.current) {
+            inputLogo.current.value = "";
+        }
+    }
+
+    async function atualizaLogo(idEmpresaLogo) {
+
+        try {
+
+            let formData = new FormData();
+            formData.append('logo', logo);
+
+            const data = await saveLogo(idEmpresaLogo, formData);
+            setLogoCadastrada(data.logo ?? "");
+            limparLogoSelecionada();
+            toast.success("Logo salva com sucesso!");
+
+        } catch (erro) {
+
+            console.error(erro);
+            toast.error(
+                typeof erro.response?.data === "string" && erro.response.data
+                    ? erro.response.data
+                    : "Erro ao tentar salvar a logo da empresa."
+            );
+        }
+    }
+
+    const handleLogoChange = (event) => {
+
+        const file = event.target.files[0];
+
+        if (!file) {
+            limparLogoSelecionada();
+            return;
+        }
+
+        if (!TIPOS_LOGO_PERMITIDOS.includes(file.type) || !EXTENSOES_LOGO_PERMITIDAS.test(file.name)) {
+            toast.error("A logo deve ser uma imagem nos formatos PNG, JPG, JPEG ou WEBP.");
+            limparLogoSelecionada();
+            return;
+        }
+
+        if (file.size > TAMANHO_MAXIMO_LOGO) {
+            toast.error("A logo não pode exceder 2 MB.");
+            limparLogoSelecionada();
+            return;
+        }
+
+        setLogo(file);
+
+        // Gera uma URL para visualização da logo
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setPreview(reader.result);
+        };
+        reader.readAsDataURL(file);
+    };
 
     async function salvar() {
         try {
             if (idEmpresa) {
                 await atualizar(MAPPING_CONTROLLER_EMPRESA, empresa);
                 toast.success("Empresa alterada com sucesso!");
+
+                if (logo) {
+                    await atualizaLogo(idEmpresa);
+                }
             } else {
-                await cadastrar(MAPPING_CONTROLLER_EMPRESA, empresa);
+                const empresaCadastrada = await cadastrar(MAPPING_CONTROLLER_EMPRESA, empresa);
                 toast.success("Empresa cadastrada com sucesso!");
+
+                if (logo) {
+                    await atualizaLogo(empresaCadastrada.id);
+                }
             }
         } catch (erro) {
             toast.error("Erro ao salvar empresa.");
@@ -208,6 +289,62 @@ export default function EmpresaForm() {
                                         setEmpresa({ ...empresa, site: e.target.value, })
                                     }
                                 />
+                            </div>
+
+                            {/* Logo */}
+                            <div className="mb-4">
+                                <label className="fieldset-legend" htmlFor="logo">
+                                    Logo da Empresa
+                                </label>
+                                <input
+                                    type="file"
+                                    id="logo"
+                                    ref={inputLogo}
+                                    accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp"
+                                    onChange={handleLogoChange}
+                                    className="file-input file-input-bordered w-full"
+                                />
+                                <p className="text-sm text-gray-500 mt-1">
+                                    Formatos aceitos: PNG, JPG, JPEG e WEBP, com até 2 MB.
+                                </p>
+
+                                {/* Visualização da logo selecionada */}
+                                {preview && (
+
+                                    <div className="mt-4">
+
+                                        <p className="text-sm font-semibold text-gray-600 mb-2">
+                                            Pré-visualização da logo:
+                                        </p>
+
+                                        <img
+                                            src={preview}
+                                            alt="Pré-visualização da logo da empresa"
+                                            className="w-40 h-40 object-contain border border-gray-300 rounded-lg p-2"
+                                        />
+
+                                    </div>
+
+                                )}
+
+                                {/* Visualização da logo já cadastrada */}
+                                {!preview && logoCadastrada && (
+
+                                    <div className="mt-4">
+
+                                        <p className="text-sm font-semibold text-gray-600 mb-2">
+                                            Logo cadastrada:
+                                        </p>
+
+                                        <img
+                                            src={`/imagens_cadastradas/${encodeURIComponent(logoCadastrada)}`}
+                                            alt="Logo da empresa"
+                                            className="w-40 h-40 object-contain border border-gray-300 rounded-lg p-2"
+                                        />
+
+                                    </div>
+
+                                )}
                             </div>
 
                             {/* Botões */}

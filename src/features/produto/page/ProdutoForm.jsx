@@ -17,8 +17,8 @@ import {
   listar,
 } from "../../../shared/services/crudService";
 
-import { MAPPING_CONTROLLER_PRODUTO } from "../service/produtoService";
-import { MAPPING_CONTROLLER_CATEGORIA_PRODUTO, saveImage } from "../../produto/service/categoriaProdutoService";
+import { MAPPING_CONTROLLER_CATEGORIA_PRODUTO } from "../../produto/service/categoriaProdutoService";
+import { MAPPING_CONTROLLER_PRODUTO, saveImage } from "../service/produtoService";
 import { MAPPING_CONTROLLER_EMPRESA } from "../../produto/service/empresaService";
 
 export default function ProdutoForm() {
@@ -45,7 +45,7 @@ export default function ProdutoForm() {
     valorUnitario: "",
     tempoEntregaMinimo: "",
     tempoEntregaMaximo: "",
-    imagem: data.imagem ?? ""
+    imagem: ""
   });
 
   useEffect(() => {
@@ -78,6 +78,7 @@ export default function ProdutoForm() {
         valorUnitario: data.valorUnitario ?? "",
         tempoEntregaMinimo: data.tempoEntregaMinimo ?? "",
         tempoEntregaMaximo: data.tempoEntregaMaximo ?? "",
+        imagem: data.imagem ?? "",
       });
     } catch (erro) {
       console.error(erro);

@@ -22,7 +22,8 @@ export default function EmpresaPage() {
     nomeEmpresarial: "",
     nomeFantasia: "",
     fone: "",
-    foneAlternativo: ""
+    foneAlternativo: "",
+    logo: ""
   });
 
 
@@ -75,7 +76,8 @@ export default function EmpresaPage() {
         nomeEmpresarial: data.nomeEmpresarial ?? "",
         nomeFantasia: data.nomeFantasia ?? "",
         fone: data.fone ?? "",
-        foneAlternativo: data.foneAlternativo ?? ""
+        foneAlternativo: data.foneAlternativo ?? "",
+        logo: data.logo ?? ""
       });
 
       document.getElementById('modal-detalhar').showModal()
@@ -173,6 +175,16 @@ export default function EmpresaPage() {
           <p className="py-4">
             <strong>Fone Alternativo:</strong> {empresa.foneAlternativo}
           </p>
+          {empresa.logo && (
+            <div className="py-4">
+              <strong>Logo:</strong>
+              <img
+                src={`/imagens_cadastradas/${encodeURIComponent(empresa.logo)}`}
+                alt="Logo da empresa"
+                className="w-40 h-40 object-contain border border-gray-300 rounded-lg p-2 mt-2"
+              />
+            </div>
+          )}
           <div className="modal-action">
             <form method="dialog">
               <button className="btn">Fechar</button>
